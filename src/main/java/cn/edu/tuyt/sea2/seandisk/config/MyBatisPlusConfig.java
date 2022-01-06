@@ -14,8 +14,6 @@ public class MyBatisPlusConfig {
 
     /**
      * 配置Mybatis-plus插件（3.4.0版本以后的配置方法）
-     *
-     * @return 返回乐观锁插件
      */
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor(){

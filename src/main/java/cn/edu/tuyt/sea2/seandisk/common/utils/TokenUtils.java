@@ -8,7 +8,6 @@ import java.util.UUID;
 /**
  * Token相关工具
  * @author ：klenkiven
- * @date ：2021/7/12 9:50
  */
 public final class TokenUtils {
 

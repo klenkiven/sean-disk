@@ -1,6 +1,8 @@
 create database if not exists sean_disk;
 use sean_disk;
-
+-- ------------------------------------- --
+--               系统表                   --
+-- ------------------------------------- --
 -- 菜单
 CREATE TABLE `sys_menu` (
                             `menu_id` bigint NOT NULL AUTO_INCREMENT,
@@ -17,12 +19,13 @@ CREATE TABLE `sys_menu` (
 -- 系统用户
 CREATE TABLE `sys_user` (
                             `user_id` bigint NOT NULL AUTO_INCREMENT,
-                            `uid` bigint NOT NULL COMMENT '工号',
+                            `uid` bigint NOT NULL UNIQUE COMMENT '工号',
                             `username` varchar(50) NOT NULL COMMENT '用户名',
                             `name` varchar(50) COMMENT '姓名',
                             `password` varchar(100) COMMENT '密码',
                             `salt` varchar(20) COMMENT '盐',
                             `email` varchar(100) COMMENT '邮箱',
+                            `qq` varchar(32) COMMENT 'QQ号',
                             `mobile` varchar(100) COMMENT '手机号',
                             `status` tinyint COMMENT '状态  0：禁用   1：正常',
                             `create_user_id` bigint(20) COMMENT '创建者ID',
@@ -76,8 +79,57 @@ CREATE TABLE `sys_role_menu` (
                                  PRIMARY KEY (`id`)
 ) ENGINE=`InnoDB` DEFAULT CHARACTER SET utf8mb4 COMMENT='角色与菜单对应关系';
 
+-- ---------------------------------------- --
+--               云盘数据表                   --
+-- ---------------------------------------- --
+
+-- 文件表
+CREATE TABLE `sean_file` (
+    `file_id` varchar(36) NOT NULL COMMENT '逻辑文件唯一标识',
+    `user_id` bigint NOT NULL COMMENT '用户ID',
+    `filename` varchar(512) NOT NULL COMMENT '文件名',
+    `length` bigint NOT NULL COMMENT '文件大小',
+    `type` varchar(128) NULL COMMENT '文件类型',
+    `physical_hash` varchar(64) NULL COMMENT '物理文件哈希',
+    `version` bigint NULL COMMENT '文件版本',
+    `create_time` datetime NULL COMMENT '文件创建时间',
+    `update_time` datetime NULL COMMENT '文件更新时间',
+    PRIMARY KEY (file_id)
+) ENGINE=`InnoDB` DEFAULT CHARACTER SET utf8mb4 COMMENT='云盘文件表';
+
+-- 文件标签
+CREATE TABLE `sean_label` (
+    `label_id` varchar(36) NOT NULL COMMENT '文件标签唯一标识',
+    `user_id` bigint NOT NULL COMMENT '标签创建者ID',
+    `label_name` varchar(256) NOT NULL COMMENT '文件标签名',
+    `is_system` tinyint NOT NULL COMMENT '是否属于系统标签',
+    `create_time` datetime NULL COMMENT '标签创建时间',
+    `update_time` datetime NULL COMMENT '标签更新时间',
+    PRIMARY KEY (label_id)
+) ENGINE=`InnoDB` DEFAULT CHARACTER SET utf8mb4 COMMENT='云盘标签表';
+
+-- 文件标签关系表
+CREATE TABLE `sean_label_file` (
+    `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `file_id` varchar(36) NOT NULL COMMENT '逻辑文件唯一标识',
+    `label_id` varchar(36) NOT NULL COMMENT '文件标签唯一标识',
+    PRIMARY KEY (id)
+) ENGINE=`InnoDB` DEFAULT CHARACTER SET utf8mb4 COMMENT='文件标签关系表';
+
+-- 文件操作日志（只有添加操作）
+CREATE TABLE `sean_file_op_log` (
+    `id` bigint NOT NULL AUTO_INCREMENT COMMENT '日志ID',
+    `file_id` varchar(36) NULL COMMENT '逻辑文件唯一标识',
+    `filename` varchar(512) NULL COMMENT '逻辑文件名',
+    `user_id` bigint NULL COMMENT '文件操作者标识',
+    `username` varchar(50) NULL COMMENT '文件操作者名称',
+    `operation` varchar(32) NULL COMMENT '文件操作',
+    `log_time` datetime NULL COMMENT '日志发生时间',
+    PRIMARY KEY (id)
+) ENGINE=`InnoDB` DEFAULT CHARACTER SET utf8mb4 COMMENT='文件操作日志表';
+
 -- 初始数据
-INSERT INTO `sys_user` (`user_id`, `uid`, `username`, `password`, `salt`, `email`, `mobile`, `status`, `create_user_id`, `create_time`) VALUES ('1', '0000', 'admin', '9ec9750e709431dad22365cabc5c625482e574c74adaebba7dd02f1129e4ce1d', 'YzcmCZNvbXocrsz9dm8e', 'root@renren.io', '13612345678', '1', '1', '2016-11-11 11:11:11');
+INSERT INTO `sys_user` (`user_id`, `uid`, `username`, `password`, `salt`, `email`, `qq`, `mobile`, `status`, `create_user_id`, `create_time`) VALUES ('1', '0000', 'admin', '9ec9750e709431dad22365cabc5c625482e574c74adaebba7dd02f1129e4ce1d', 'YzcmCZNvbXocrsz9dm8e', 'root@sea2.org', '10001', '13612345678', '1', '1', '2016-11-11 11:11:11');
 
 INSERT INTO `sys_menu`(`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`) VALUES (1, 0, '系统管理', NULL, NULL, 0, 'system', 0);
 INSERT INTO `sys_menu`(`menu_id`, `parent_id`, `name`, `url`, `perms`, `type`, `icon`, `order_num`) VALUES (2, 1, '管理员列表', 'sys/user', NULL, 1, 'admin', 1);

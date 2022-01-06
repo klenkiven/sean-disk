@@ -10,7 +10,6 @@ import java.util.Properties;
 /**
  * Kaptcha 验证码生成工具
  * @author ：klenkiven
- * @date ：2021/7/12 21:34
  */
 @Configuration
 public class KaptchaConfig {

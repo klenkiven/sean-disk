@@ -6,15 +6,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
 /**
+ * 过滤器配置
+ * <p>更改过滤器生命周期维护上下文</p>
  * @author ：klenkiven
- * @date ：2021/7/13 8:58
  */
 @Configuration
 public class FilterConfig {
 
     @Bean
-    public FilterRegistrationBean shiroFilterRegistration() {
-        FilterRegistrationBean registration = new FilterRegistrationBean();
+    public FilterRegistrationBean<DelegatingFilterProxy> shiroFilterRegistration() {
+        FilterRegistrationBean<DelegatingFilterProxy> registration = new FilterRegistrationBean<>();
         registration.setFilter(new DelegatingFilterProxy("shiroFilter"));
         //该值缺省为false，表示生命周期由SpringApplicationContext管理，设置为true则表示由ServletContainer管理
         registration.addInitParameter("targetFilterLifecycle", "true");
