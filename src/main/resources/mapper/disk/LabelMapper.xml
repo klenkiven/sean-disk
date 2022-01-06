@@ -4,7 +4,7 @@
 <mapper namespace="cn.edu.tuyt.sea2.seandisk.module.disk.mapper.LabelDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="LabelEntity" id="labelMap">
+    <resultMap type="cn.edu.tuyt.sea2.seandisk.module.disk.entity.LabelEntity" id="labelMap">
         <result property="labelId" column="label_id"/>
         <result property="userId" column="user_id"/>
         <result property="labelName" column="label_name"/>

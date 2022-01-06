@@ -1,5 +1,6 @@
 package cn.edu.tuyt.sea2.seandisk.module.disk.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -20,7 +21,7 @@ public class FileEntity implements Serializable {
 	/**
 	 * 逻辑文件唯一标识
 	 */
-	@TableId
+	@TableId(type = IdType.INPUT)
 	private String fileId;
 	/**
 	 * 用户ID

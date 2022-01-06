@@ -4,7 +4,7 @@
 <mapper namespace="cn.edu.tuyt.sea2.seandisk.module.disk.mapper.FileMapper">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="FileEntity" id="fileMap">
+    <resultMap type="cn.edu.tuyt.sea2.seandisk.module.disk.entity.FileEntity" id="fileMap">
         <result property="fileId" column="file_id"/>
         <result property="userId" column="user_id"/>
         <result property="filename" column="filename"/>

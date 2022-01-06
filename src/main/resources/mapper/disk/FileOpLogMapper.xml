@@ -4,7 +4,7 @@
 <mapper namespace="cn.edu.tuyt.sea2.seandisk.module.disk.mapper.FileOpLogDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="FileOpLogEntity" id="fileOpLogMap">
+    <resultMap type="cn.edu.tuyt.sea2.seandisk.module.disk.entity.FileOpLogEntity" id="fileOpLogMap">
         <result property="id" column="id"/>
         <result property="fileId" column="file_id"/>
         <result property="filename" column="filename"/>

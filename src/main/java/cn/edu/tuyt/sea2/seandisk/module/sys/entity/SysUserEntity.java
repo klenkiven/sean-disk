@@ -1,5 +1,6 @@
 package cn.edu.tuyt.sea2.seandisk.module.sys.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -17,8 +18,6 @@ import java.util.List;
  * 系统用户
  * 
  * @author klenkiven
- * @email wzl709@outlook.com
- * @date 2021-07-12 09:12:55
  */
 @Data
 @TableName("sys_user")
@@ -28,7 +27,7 @@ public class SysUserEntity implements Serializable {
 	/**
 	 * 
 	 */
-	@TableId
+	@TableId(type = IdType.INPUT)
 	private Long userId;
 
 	/**
@@ -67,6 +66,10 @@ public class SysUserEntity implements Serializable {
 	 * 手机号
 	 */
 	private String mobile;
+	/**
+	 * QQ号码
+	 */
+	private Long qq;
 	/**
 	 * 状态  0：禁用   1：正常
 	 */

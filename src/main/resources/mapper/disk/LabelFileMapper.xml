@@ -4,7 +4,7 @@
 <mapper namespace="cn.edu.tuyt.sea2.seandisk.module.disk.mapper.LabelFileDao">
 
 	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="LabelFileEntity" id="labelFileMap">
+    <resultMap type="cn.edu.tuyt.sea2.seandisk.module.disk.entity.LabelFileEntity" id="labelFileMap">
         <result property="id" column="id"/>
         <result property="fileId" column="file_id"/>
         <result property="labelId" column="label_id"/>

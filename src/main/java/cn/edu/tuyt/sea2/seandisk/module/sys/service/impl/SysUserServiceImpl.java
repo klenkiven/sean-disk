@@ -75,6 +75,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUserEntity
         String salt = RandomStringUtils.randomAlphabetic(20);
         user.setPassword(new Sha256Hash(user.getPassword(), salt).toHex());
         user.setSalt(salt);
+        user.setUserId(user.getUid());
         this.save(user);
 
         //检查角色是否越权
