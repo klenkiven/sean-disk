@@ -16,7 +16,6 @@ sean:
   local-file:
     location: "D:\\file_repository\\"
 
-
 # mybatis
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
