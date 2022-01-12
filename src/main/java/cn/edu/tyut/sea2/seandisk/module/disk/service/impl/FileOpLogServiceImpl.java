@@ -4,6 +4,7 @@ import cn.edu.tyut.sea2.seandisk.module.disk.entity.FileEntity;
 import cn.edu.tyut.sea2.seandisk.module.disk.mapper.FileOpLogMapper;
 import cn.edu.tyut.sea2.seandisk.module.disk.service.FileOpLogService;
 import cn.edu.tyut.sea2.seandisk.module.sys.entity.SysUserEntity;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +21,9 @@ public class FileOpLogServiceImpl extends ServiceImpl<FileOpLogMapper, FileOpLog
 
     @Override
     public Page<FileOpLogEntity> queryPage(Page<FileOpLogEntity> queryPage, String key) {
-        return null;
+        return this.page(queryPage,
+                new QueryWrapper<FileOpLogEntity>()
+                        .like("filename", key));
     }
 
     @Override
