@@ -13,6 +13,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.edu.tyut.sea2.seandisk.module.disk.entity.LabelEntity;
 import cn.edu.tyut.sea2.seandisk.module.disk.service.LabelService;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +29,7 @@ public class LabelServiceImpl extends ServiceImpl<LabelMapper, LabelEntity> impl
                 new QueryWrapper<LabelEntity>()
                         .eq("user_id", userId));
         // 将Entity转化为VO
-        return labelEntityList.stream()
+        List<LabelVO> labelVOS = labelEntityList.stream()
                 .map((entity) -> {
                     LabelVO vo = new LabelVO();
                     BeanUtils.copyProperties(entity, vo);
@@ -36,6 +37,10 @@ public class LabelServiceImpl extends ServiceImpl<LabelMapper, LabelEntity> impl
                     return vo;
                 })
                 .collect(Collectors.toList());
+        List<LabelVO> result = new ArrayList<>();
+        result.add(LabelVO.DEFAULT_LABEL);
+        result.addAll(labelVOS);
+        return result;
     }
 
     @Override

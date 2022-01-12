@@ -37,7 +37,6 @@ public class LabelController {
     public Result<List<LabelVO>> list(){
         SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
         List<LabelVO> labelList = labelService.listAllByUserId(user.getUserId());
-        labelList.add(LabelVO.DEFAULT_LABEL);
         return Result.ok(labelList);
     }
 
