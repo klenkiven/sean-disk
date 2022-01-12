@@ -1,9 +1,11 @@
 package cn.edu.tyut.sea2.seandisk.module.disk.service.impl;
 
 import cn.edu.tyut.sea2.seandisk.common.exception.GeneralException;
+import cn.edu.tyut.sea2.seandisk.common.validation.Assert;
 import cn.edu.tyut.sea2.seandisk.module.disk.component.LocalFileOperation;
 import cn.edu.tyut.sea2.seandisk.module.disk.entity.FileEntity;
 import cn.edu.tyut.sea2.seandisk.module.disk.mapper.FileMapper;
+import cn.edu.tyut.sea2.seandisk.module.disk.mapper.LabelFileMapper;
 import cn.edu.tyut.sea2.seandisk.module.sys.entity.SysUserEntity;
 import cn.edu.tyut.sea2.seandisk.module.disk.service.FileService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -18,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -26,14 +29,25 @@ import java.util.UUID;
 public class FileServiceImpl extends ServiceImpl<FileMapper, FileEntity> implements FileService {
 
     private final LocalFileOperation localFileOperation;
+    private final LabelFileMapper labelFileMapper;
 
     @Override
-    public Page<FileEntity> queryPage(Page<FileEntity> queryPage, String key) {
-        return this.page(
-                queryPage,
-                new QueryWrapper<FileEntity>()
-                        .like(StringUtils.isNotEmpty(key), "filename", key)
-        );
+    public Page<FileEntity> queryPage(Page<FileEntity> queryPage, String key,
+                                      List<String> labelIdList, SysUserEntity user) {
+        Assert.isNull(labelIdList, "标签列表对象不为null");
+        // 构造文件列表查询条件
+        QueryWrapper<FileEntity> query = new QueryWrapper<FileEntity>()
+                .like(StringUtils.isNotEmpty(key), "filename", key)
+                .eq("user_id", user.getUserId())
+                .orderByDesc("create_time");
+
+        // 查询带有条件标签的文件ID列表
+        if (labelIdList.size() != 0) {
+            List<String> fileIdList = labelFileMapper.selectFileIdListByLabel(labelIdList);
+            query.in(fileIdList.size() > 0, "file_id", fileIdList);
+        }
+
+        return this.page(queryPage, query);
     }
 
     @Override

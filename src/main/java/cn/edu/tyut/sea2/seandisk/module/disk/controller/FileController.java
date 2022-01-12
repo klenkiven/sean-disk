@@ -4,12 +4,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import cn.edu.tyut.sea2.seandisk.common.utils.FileUtils;
 import cn.edu.tyut.sea2.seandisk.common.utils.Result;
 import cn.edu.tyut.sea2.seandisk.module.disk.annotation.DiskOpLog;
+import cn.edu.tyut.sea2.seandisk.module.disk.vo.FileListParam;
+import cn.edu.tyut.sea2.seandisk.module.disk.vo.LabelVO;
 import cn.edu.tyut.sea2.seandisk.module.sys.entity.SysUserEntity;
 import cn.edu.tyut.sea2.seandisk.module.disk.entity.FileEntity;
 import cn.edu.tyut.sea2.seandisk.module.disk.service.FileService;
@@ -68,12 +73,22 @@ public class FileController {
     @GetMapping("/list")
     @RequiresPermissions("disk:file:list")
     @DiskOpLog("list-file")
-    public Result<Page<FileEntity>> list(@RequestParam Map<String, Object> params){
-        int pageIndex = Integer.parseInt((String) params.get("page"));
-        int limit = Integer.parseInt((String) params.get("limit"));
-        String key = (String) params.get("key");
-        Page<FileEntity> queryPage = new Page<>(pageIndex, limit);
-        Page<FileEntity> page = fileService.queryPage(queryPage, key);
+    public Result<Page<FileEntity>> list(FileListParam params){
+        // 处理前端传来的标签ID列表
+        // 如果ID列表为null，则默认传递空的列表对象
+        List<String> labelIdList = params.getLabelIdList();
+        if (labelIdList == null) {
+            labelIdList = new ArrayList<>();
+        } else {
+            labelIdList = labelIdList.stream()
+                    .filter((labelId) -> !labelId.equals(LabelVO.DEFAULT_LABEL.getLabelId()))
+                    .collect(Collectors.toList());
+        }
+        // 获取当前登录用户的信息
+        SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+        // 查询文件查询结果
+        Page<FileEntity> queryPage = new Page<>(params.getPage(), params.getLimit());
+        Page<FileEntity> page = fileService.queryPage(queryPage, params.getKey(), labelIdList, user);
 
         return Result.ok(page);
     }

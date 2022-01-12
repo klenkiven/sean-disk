@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="cn.edu.tuyt.sea2.seandisk.module.disk.mapper.LabelFileDao">
+<mapper namespace="cn.edu.tyut.sea2.seandisk.module.disk.mapper.LabelFileMapper">
 
 	<!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="cn.edu.tyut.sea2.seandisk.module.disk.entity.LabelFileEntity" id="labelFileMap">
@@ -10,5 +10,17 @@
         <result property="labelId" column="label_id"/>
     </resultMap>
 
+    <!-- 根据标签列表查询被标签的文件ID列表 -->
+    <select id="selectFileIdListByLabel" resultType="String" parameterType="java.util.List">
+        <bind name="listSize" value="labelIdList.size()"/>
+        select file_id
+        from sean_label_file
+        where label_id in
+            <foreach collection="labelIdList" item="labelId" open="(" separator="," close=")">
+                #{labelId}
+            </foreach>
+        group by file_id
+        having count(label_id) >= #{listSize};
+    </select>
 
 </mapper>

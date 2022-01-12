@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * 云盘文件表
@@ -15,7 +16,16 @@ import java.io.InputStream;
  */
 public interface FileService extends IService<FileEntity> {
 
-    Page<FileEntity> queryPage(Page<FileEntity> queryPage, String key);
+    /**
+     * 分页查询文件列表
+     * <p>根据多种条件查询文件列表</p>
+     * @param queryPage 查询页
+     * @param key 查询关键字
+     * @param labelIdList 查询所属的文件标签
+     * @param user 登录用户信息
+     * @return 返回页
+     */
+    Page<FileEntity> queryPage(Page<FileEntity> queryPage, String key, List<String> labelIdList, SysUserEntity user);
 
     /**
      * 上传文件
