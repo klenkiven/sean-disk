@@ -32,7 +32,7 @@ public interface FileService extends IService<FileEntity> {
      * @param file 文件流
      * @param user 当前登录的用户
      */
-    void saveFile(MultipartFile file, SysUserEntity user);
+    FileEntity saveFile(MultipartFile file, SysUserEntity user);
 
     /**
      * 根据文件的逻辑ID下载文件

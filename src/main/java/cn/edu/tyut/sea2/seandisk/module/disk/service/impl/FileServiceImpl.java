@@ -51,7 +51,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileEntity> impleme
     }
 
     @Override
-    public void saveFile(MultipartFile file, SysUserEntity user) {
+    public FileEntity saveFile(MultipartFile file, SysUserEntity user) {
         String physicalHash = "";
         physicalHash = localFileOperation.writeFile(file);
         // 设置文件实体属性
@@ -71,7 +71,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileEntity> impleme
                 String randomUUID = UUID.randomUUID().toString();
                 fileEntity.setFileId(randomUUID);
                 this.save(fileEntity);
-                break;
+                return fileEntity;
             } catch (Exception e) {
                 // Do Nothing
                 System.err.println(e.getMessage());

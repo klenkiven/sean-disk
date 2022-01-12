@@ -7,12 +7,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import cn.edu.tyut.sea2.seandisk.common.utils.FileUtils;
 import cn.edu.tyut.sea2.seandisk.common.utils.Result;
-import cn.edu.tyut.sea2.seandisk.module.disk.annotation.DiskOpLog;
+import cn.edu.tyut.sea2.seandisk.module.disk.service.FileOpLogService;
 import cn.edu.tyut.sea2.seandisk.module.disk.vo.FileListParam;
 import cn.edu.tyut.sea2.seandisk.module.disk.vo.LabelVO;
 import cn.edu.tyut.sea2.seandisk.module.sys.entity.SysUserEntity;
@@ -39,6 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class FileController {
     private final FileService fileService;
+    private final FileOpLogService fileOpLogService;
 
     /**
      * 上传文件
@@ -47,7 +47,11 @@ public class FileController {
     @RequiresPermissions("disk:file:save")
     public Result<?> save(@RequestBody MultipartFile file) {
         SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
-        fileService.saveFile(file, user);
+        FileEntity uploadedFile = fileService.saveFile(file, user);
+
+        // ---- Log ----
+        fileOpLogService.logFileOp("upload", user, uploadedFile);
+        // ---- Log ----
         return Result.ok();
     }
 
@@ -59,6 +63,12 @@ public class FileController {
     public void downloadFile(@RequestParam String fileId, HttpServletResponse response) throws IOException {
         try(ServletOutputStream outputStream = response.getOutputStream()) {
             FileEntity file = fileService.getFileById(fileId);
+
+            // ---- Log ----
+            SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
+            fileOpLogService.logFileOp("upload", user, file);
+            // ---- Log ----
+
             String filenameEncoded = URLEncoder.encode(file.getFilename(), StandardCharsets.UTF_8);
             response.addHeader("Content-Disposition", "attachment; filename=" + filenameEncoded);
             response.addHeader("Content-Length", file.getLength().toString());
@@ -70,10 +80,9 @@ public class FileController {
     /**
      * 列表
      */
-    @GetMapping("/list")
+    @PostMapping("/list")
     @RequiresPermissions("disk:file:list")
-    @DiskOpLog("list-file")
-    public Result<Page<FileEntity>> list(FileListParam params){
+    public Result<Page<FileEntity>> list(@RequestBody FileListParam params){
         // 处理前端传来的标签ID列表
         // 如果ID列表为null，则默认传递空的列表对象
         List<String> labelIdList = params.getLabelIdList();
