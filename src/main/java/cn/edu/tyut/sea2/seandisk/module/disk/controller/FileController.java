@@ -67,7 +67,7 @@ public class FileController {
 
             // ---- Log ----
             SysUserEntity user = (SysUserEntity) SecurityUtils.getSubject().getPrincipal();
-            fileOpLogService.logFileOp("upload", user, file);
+            fileOpLogService.logFileOp("download", user, file);
             // ---- Log ----
 
             String filenameEncoded = URLEncoder.encode(file.getFilename(), StandardCharsets.UTF_8);
