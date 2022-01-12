@@ -55,7 +55,7 @@ public class FileController {
      * 下载文件
      */
     @GetMapping("/download")
-    @RequiresPermissions("disk:file:download")
+//    @RequiresPermissions("disk:file:download")
     public void downloadFile(@RequestParam String fileId, HttpServletResponse response) throws IOException {
         try(ServletOutputStream outputStream = response.getOutputStream()) {
             FileEntity file = fileService.getFileById(fileId);
@@ -99,7 +99,6 @@ public class FileController {
      */
     @RequestMapping("/info/{fileId}")
     @RequiresPermissions("disk:file:info")
-    @DiskOpLog("info-file")
     public Result<FileEntity> info(@PathVariable("fileId") String fileId){
 		FileEntity file = fileService.getById(fileId);
 
