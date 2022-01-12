@@ -1,5 +1,6 @@
 package cn.edu.tyut.sea2.seandisk.module.disk.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
@@ -20,7 +21,7 @@ public class LabelEntity implements Serializable {
 	/**
 	 * 文件标签唯一标识
 	 */
-	@TableId
+	@TableId(type = IdType.INPUT)
 	private String labelId;
 	/**
 	 * 标签创建者ID
