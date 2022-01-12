@@ -23,4 +23,11 @@ public interface LabelFileMapper extends BaseMapper<LabelFileEntity> {
      * @return 文件ID列表
      */
     List<String> selectFileIdListByLabel(@Param("labelIdList") List<String> labelIdList);
+
+    /**
+     * 根据标签列表查找文件ID
+     * @param fileId 标签ID列表，对象不能为空而且长度不能为0
+     * @return 标签ID列表
+     */
+    List<String> selectLabelListByFileId(@Param("fileId") String fileId);
 }

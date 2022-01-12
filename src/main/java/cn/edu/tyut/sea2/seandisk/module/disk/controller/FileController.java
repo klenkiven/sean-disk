@@ -13,7 +13,7 @@ import cn.edu.tyut.sea2.seandisk.common.utils.FileUtils;
 import cn.edu.tyut.sea2.seandisk.common.utils.Result;
 import cn.edu.tyut.sea2.seandisk.module.disk.service.FileOpLogService;
 import cn.edu.tyut.sea2.seandisk.module.disk.vo.FileListParam;
-import cn.edu.tyut.sea2.seandisk.module.disk.vo.FileUpdateParam;
+import cn.edu.tyut.sea2.seandisk.module.disk.vo.FileDetailVO;
 import cn.edu.tyut.sea2.seandisk.module.disk.vo.LabelVO;
 import cn.edu.tyut.sea2.seandisk.module.sys.entity.SysUserEntity;
 import cn.edu.tyut.sea2.seandisk.module.disk.entity.FileEntity;
@@ -60,7 +60,7 @@ public class FileController {
      * 下载文件
      */
     @GetMapping("/download")
-//    @RequiresPermissions("disk:file:download")
+    @RequiresPermissions("disk:file:download")
     public void downloadFile(@RequestParam String fileId, HttpServletResponse response) throws IOException {
         try(ServletOutputStream outputStream = response.getOutputStream()) {
             FileEntity file = fileService.getFileById(fileId);
@@ -109,8 +109,8 @@ public class FileController {
      */
     @RequestMapping("/info/{fileId}")
     @RequiresPermissions("disk:file:info")
-    public Result<FileEntity> info(@PathVariable("fileId") String fileId){
-		FileEntity file = fileService.getById(fileId);
+    public Result<FileDetailVO> info(@PathVariable("fileId") String fileId){
+        FileDetailVO file = fileService.getFileDetail(fileId);
 
         return Result.ok(file);
     }
@@ -120,7 +120,7 @@ public class FileController {
      */
     @PostMapping("/update")
     @RequiresPermissions("disk:file:update")
-    public Result<?> update(@RequestBody FileUpdateParam file){
+    public Result<?> update(@RequestBody FileDetailVO file){
 		fileService.updateFile(file);
         return Result.ok();
     }

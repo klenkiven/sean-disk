@@ -23,4 +23,10 @@
         having count(label_id) >= #{listSize};
     </select>
 
+    <select id="selectLabelListByFileId" parameterType="String" resultType="String">
+        select label_id
+        from sean_label_file
+        where file_id = #{fileId};
+    </select>
+
 </mapper>

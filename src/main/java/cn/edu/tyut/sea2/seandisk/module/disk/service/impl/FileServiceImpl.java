@@ -7,7 +7,7 @@ import cn.edu.tyut.sea2.seandisk.module.disk.entity.FileEntity;
 import cn.edu.tyut.sea2.seandisk.module.disk.entity.LabelFileEntity;
 import cn.edu.tyut.sea2.seandisk.module.disk.mapper.FileMapper;
 import cn.edu.tyut.sea2.seandisk.module.disk.mapper.LabelFileMapper;
-import cn.edu.tyut.sea2.seandisk.module.disk.vo.FileUpdateParam;
+import cn.edu.tyut.sea2.seandisk.module.disk.vo.FileDetailVO;
 import cn.edu.tyut.sea2.seandisk.module.sys.entity.SysUserEntity;
 import cn.edu.tyut.sea2.seandisk.module.disk.service.FileService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -25,7 +25,6 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 
 @Service("fileService")
@@ -46,9 +45,12 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileEntity> impleme
                 .orderByDesc("create_time");
 
         // 查询带有条件标签的文件ID列表
+        // 如果文件标签不为空（去除默认标签），且根据标签查询到的文件数量不为0
         if (labelIdList.size() != 0) {
             List<String> fileIdList = labelFileMapper.selectFileIdListByLabel(labelIdList);
             query.in(fileIdList.size() > 0, "file_id", fileIdList);
+            // 如果查询不到文件，说明此标签没有文件，需要插入一条恒为false的语句
+            query.in(fileIdList.size() == 0, "file_id", "-1");
         }
 
         return this.page(queryPage, query);
@@ -108,7 +110,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileEntity> impleme
     }
 
     @Override
-    public void updateFile(FileUpdateParam file) {
+    public void updateFile(FileDetailVO file) {
         // 保存文件基础属性
         FileEntity fileEntity = new FileEntity();
         fileEntity.setFileId(file.getFileId());
@@ -125,5 +127,17 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileEntity> impleme
             labelFileEntity.setLabelId(labelId);
             labelFileMapper.insert(labelFileEntity);
         });
+    }
+
+    @Override
+    public FileDetailVO getFileDetail(String fileId) {
+        FileEntity byId = getById(fileId);
+        FileDetailVO vo = new FileDetailVO();
+        BeanUtils.copyProperties(byId, vo);
+
+        // 获取文件关系
+        List<String> labelIdList = labelFileMapper.selectLabelListByFileId(fileId);
+        vo.setFileLabelList(labelIdList);
+        return vo;
     }
 }

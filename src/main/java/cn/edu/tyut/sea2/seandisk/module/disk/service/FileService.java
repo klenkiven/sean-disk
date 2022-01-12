@@ -1,7 +1,7 @@
 package cn.edu.tyut.sea2.seandisk.module.disk.service;
 
 import cn.edu.tyut.sea2.seandisk.module.disk.entity.FileEntity;
-import cn.edu.tyut.sea2.seandisk.module.disk.vo.FileUpdateParam;
+import cn.edu.tyut.sea2.seandisk.module.disk.vo.FileDetailVO;
 import cn.edu.tyut.sea2.seandisk.module.sys.entity.SysUserEntity;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -53,6 +53,13 @@ public interface FileService extends IService<FileEntity> {
      * 根据文件ID修改文件的相关属性
      * @param file 请求参数
      */
-    void updateFile(FileUpdateParam file);
+    void updateFile(FileDetailVO file);
+
+    /**
+     * 获取文件详情
+     * @param fileId 文件ID
+     * @return 文件详细信息
+     */
+    FileDetailVO getFileDetail(String fileId);
 }
 

@@ -30,7 +30,7 @@ public class LabelController {
 
     /**
      * 返回所有此用户的标签
-     * <p>查询到此用户的所有标签，并且添加默认标签</p>
+     * <p>查询到此用户的所有标签，并且添加默认标签。标签列表的第一个必须是默认标签，否则前端可能出现问题</p>
      */
     @GetMapping("/list")
     @RequiresPermissions("disk:label:list")

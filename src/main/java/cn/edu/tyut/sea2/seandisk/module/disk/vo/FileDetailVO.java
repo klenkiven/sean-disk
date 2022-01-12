@@ -8,7 +8,7 @@ import java.util.List;
  * 文件内容修改类
  */
 @Data
-public class FileUpdateParam {
+public class FileDetailVO {
 
     private String fileId;
 
