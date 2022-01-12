@@ -13,6 +13,7 @@ import cn.edu.tyut.sea2.seandisk.common.utils.FileUtils;
 import cn.edu.tyut.sea2.seandisk.common.utils.Result;
 import cn.edu.tyut.sea2.seandisk.module.disk.service.FileOpLogService;
 import cn.edu.tyut.sea2.seandisk.module.disk.vo.FileListParam;
+import cn.edu.tyut.sea2.seandisk.module.disk.vo.FileUpdateParam;
 import cn.edu.tyut.sea2.seandisk.module.disk.vo.LabelVO;
 import cn.edu.tyut.sea2.seandisk.module.sys.entity.SysUserEntity;
 import cn.edu.tyut.sea2.seandisk.module.disk.entity.FileEntity;
@@ -117,10 +118,10 @@ public class FileController {
     /**
      * 修改
      */
-    @RequestMapping("/update")
+    @PostMapping("/update")
     @RequiresPermissions("disk:file:update")
-    public Result<?> update(@RequestBody FileEntity file){
-		fileService.updateById(file);
+    public Result<?> update(@RequestBody FileUpdateParam file){
+		fileService.updateFile(file);
         return Result.ok();
     }
 

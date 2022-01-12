@@ -4,14 +4,17 @@ import cn.edu.tyut.sea2.seandisk.common.exception.GeneralException;
 import cn.edu.tyut.sea2.seandisk.common.validation.Assert;
 import cn.edu.tyut.sea2.seandisk.module.disk.component.LocalFileOperation;
 import cn.edu.tyut.sea2.seandisk.module.disk.entity.FileEntity;
+import cn.edu.tyut.sea2.seandisk.module.disk.entity.LabelFileEntity;
 import cn.edu.tyut.sea2.seandisk.module.disk.mapper.FileMapper;
 import cn.edu.tyut.sea2.seandisk.module.disk.mapper.LabelFileMapper;
+import cn.edu.tyut.sea2.seandisk.module.disk.vo.FileUpdateParam;
 import cn.edu.tyut.sea2.seandisk.module.sys.entity.SysUserEntity;
 import cn.edu.tyut.sea2.seandisk.module.disk.service.FileService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -22,6 +25,7 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 
 @Service("fileService")
@@ -52,7 +56,7 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileEntity> impleme
 
     @Override
     public FileEntity saveFile(MultipartFile file, SysUserEntity user) {
-        String physicalHash = "";
+        String physicalHash;
         physicalHash = localFileOperation.writeFile(file);
         // 设置文件实体属性
         FileEntity fileEntity = new FileEntity();
@@ -101,5 +105,25 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileEntity> impleme
 //            throw new GeneralException("此文件不属于该用户");
 //        }
         return file;
+    }
+
+    @Override
+    public void updateFile(FileUpdateParam file) {
+        // 保存文件基础属性
+        FileEntity fileEntity = new FileEntity();
+        fileEntity.setFileId(file.getFileId());
+        fileEntity.setFilename(file.getFilename());
+        updateById(fileEntity);
+
+        // 保存文件关联关系
+        // 删除所有的原有关系，替换为新的关系
+        String fileId = file.getFileId();
+        labelFileMapper.delete(new QueryWrapper<LabelFileEntity>().eq("file_id", fileId));
+        file.getFileLabelList().forEach((labelId) -> {
+            LabelFileEntity labelFileEntity = new LabelFileEntity();
+            labelFileEntity.setFileId(file.getFileId());
+            labelFileEntity.setLabelId(labelId);
+            labelFileMapper.insert(labelFileEntity);
+        });
     }
 }
