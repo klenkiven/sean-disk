@@ -61,5 +61,12 @@ public interface FileService extends IService<FileEntity> {
      * @return 文件详细信息
      */
     FileDetailVO getFileDetail(String fileId);
+
+    /**
+     * 根据文件ID批量删除文件
+     * <p>这里要注意，删除文件的时候一定要删除与之相关的关联关系</p>
+     * @param fileIds 文件ID列表
+     */
+    void removeFileByIds(List<String> fileIds);
 }
 

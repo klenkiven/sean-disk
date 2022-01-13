@@ -140,4 +140,14 @@ public class FileServiceImpl extends ServiceImpl<FileMapper, FileEntity> impleme
         vo.setFileLabelList(labelIdList);
         return vo;
     }
+
+    @Override
+    public void removeFileByIds(List<String> fileIds) {
+        // 文件记录删除
+        this.removeByIds(fileIds);
+
+        // 删除文件相关的关联关系
+        labelFileMapper.delete(new QueryWrapper<LabelFileEntity>()
+                .in(fileIds.size() > 0, "file_id", fileIds));
+    }
 }

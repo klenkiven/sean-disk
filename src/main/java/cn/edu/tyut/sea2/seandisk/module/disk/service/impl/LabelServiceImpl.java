@@ -1,11 +1,14 @@
 package cn.edu.tyut.sea2.seandisk.module.disk.service.impl;
 
 import cn.edu.tyut.sea2.seandisk.common.exception.GeneralException;
+import cn.edu.tyut.sea2.seandisk.module.disk.entity.LabelFileEntity;
+import cn.edu.tyut.sea2.seandisk.module.disk.mapper.LabelFileMapper;
 import cn.edu.tyut.sea2.seandisk.module.disk.mapper.LabelMapper;
 import cn.edu.tyut.sea2.seandisk.module.disk.vo.LabelVO;
 import cn.edu.tyut.sea2.seandisk.module.sys.entity.SysUserEntity;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.util.BeanUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -21,7 +24,9 @@ import java.util.stream.Collectors;
 
 
 @Service("labelService")
+@RequiredArgsConstructor
 public class LabelServiceImpl extends ServiceImpl<LabelMapper, LabelEntity> implements LabelService {
+    private final LabelFileMapper labelFileMapper;
 
     @Override
     public List<LabelVO> listAllByUserId(Long userId) {
@@ -76,6 +81,9 @@ public class LabelServiceImpl extends ServiceImpl<LabelMapper, LabelEntity> impl
         }
         // 根据ID删除标签
         baseMapper.deleteById(labelId);
+        // 删除标签相关的记录
+        labelFileMapper.delete(new QueryWrapper<LabelFileEntity>()
+                .eq("label_id", labelId));
     }
 
     /**

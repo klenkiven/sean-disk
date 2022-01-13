@@ -131,7 +131,7 @@ public class FileController {
     @RequestMapping("/delete")
     @RequiresPermissions("disk:file:delete")
     public Result<?> delete(@RequestBody String[] fileIds){
-		fileService.removeByIds(Arrays.asList(fileIds));
+		fileService.removeFileByIds(Arrays.asList(fileIds));
         return Result.ok();
     }
 
